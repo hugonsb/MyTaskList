@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,7 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -42,6 +40,7 @@ import com.example.mytasklist.R
 import com.example.mytasklist.model.Task
 import com.example.mytasklist.navigation.canGoBack
 import com.example.mytasklist.theme.myFontFamily
+import com.example.mytasklist.util.CustomTextFieldColors
 import com.example.mytasklist.util.CustomTopAppBar
 import com.example.mytasklist.viewmodel.AddTaskViewModel
 import kotlinx.coroutines.launch
@@ -53,173 +52,155 @@ fun AddTaskView(
     addTaskViewModel: AddTaskViewModel = koinViewModel<AddTaskViewModel>()
 ) {
 
-    val addTaskState by addTaskViewModel.taskState.collectAsState()
-
-    val title = addTaskState.task.title
-    val details = addTaskState.task.details
+    val uiState by addTaskViewModel.taskState.collectAsState()
+    val title = uiState.task.title
+    val details = uiState.task.details
 
     val coroutineScope = rememberCoroutineScope()
 
     var isTitleError by rememberSaveable { mutableStateOf(false) }
     var isDetailsError by rememberSaveable { mutableStateOf(false) }
-
     var enableButton by rememberSaveable { mutableStateOf(true) }
+    val colorsTextFields = CustomTextFieldColors.colorsTextFields()
 
-    val colorsTextFields = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = MaterialTheme.colorScheme.tertiary.copy(0.9f),
-        focusedContainerColor = MaterialTheme.colorScheme.tertiary.copy(0.9f),
-        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
-        focusedBorderColor = MaterialTheme.colorScheme.onSurface,
-        focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface,
-        cursorColor = MaterialTheme.colorScheme.onSurface,
-        errorBorderColor = Color.Red,
-        errorContainerColor = MaterialTheme.colorScheme.tertiary.copy(0.9f),
-        errorPlaceholderColor = MaterialTheme.colorScheme.onSurface
-    )
-
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary
+                    )
+                )
+            )
+            .padding(10.dp)
+    ) {
         CustomTopAppBar(onBackPressed = {
             if (navController.canGoBack) {
                 navController.popBackStack("homeView", false)
             }
         }, barTitle = stringResource(R.string.adicionar_tarefa))
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.secondary
-                        )
-                    )
+        OutlinedTextField(
+            value = title,
+            onValueChange = {
+                addTaskViewModel.setTittle(it)
+                isTitleError = false
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences
+            ),
+            maxLines = 1,
+            isError = isTitleError,
+            supportingText = { if (isTitleError) Text(stringResource(R.string.digite_um_titulo_para_a_tarefa)) },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.titulo),
+                    fontFamily = myFontFamily,
+                    fontSize = 28.sp
                 )
-                .padding(10.dp)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = colorsTextFields,
+            textStyle = TextStyle(fontFamily = myFontFamily, fontSize = 28.sp),
+            shape = RoundedCornerShape(10.dp)
+            //shape = CutCornerShape(topStart = 16.dp, bottomEnd = 16.dp),
+        )
+
+        Spacer(modifier = Modifier.height(3.dp))
+
+        OutlinedTextField(
+            value = details,
+            onValueChange = {
+                addTaskViewModel.setDetails(it)
+                isDetailsError = false
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences
+            ),
+            isError = isDetailsError,
+            supportingText = { if (isDetailsError) Text(stringResource(R.string.digite_os_detalhes_da_tarefa)) },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.detalhes),
+                    fontFamily = myFontFamily,
+                    fontSize = 20.sp
+                )
+            },
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            colors = colorsTextFields,
+            textStyle = TextStyle(fontFamily = myFontFamily, fontSize = 20.sp),
+            shape = RoundedCornerShape(10.dp)
+            //shape = CutCornerShape(topStart = 16.dp, bottomEnd = 16.dp),
+        )
+
+        Spacer(modifier = Modifier.height(3.dp))
+
+        Button(
+            onClick = {
+                enableButton = false
+                if (title.isNotEmpty() && details.isNotEmpty()) {
+                    val task = Task(title = title, details = details)
+
+                    coroutineScope.launch {
+                        addTaskViewModel.addTask(task)
+                    }
+
+                    navController.popBackStack("homeView", false)
+                } else {
+                    if (title.isEmpty()) {
+                        isTitleError = true
+                    }
+                    if (details.isEmpty()) {
+                        isDetailsError = true
+                    }
+                    enableButton = true
+                }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                disabledContainerColor = Color.Gray
+            ),
+            shape = RoundedCornerShape(10.dp),
+            enabled = enableButton,
+            //shape = CutCornerShape(topStart = 14.dp, bottomEnd = 14.dp),
+            elevation = ButtonDefaults.buttonElevation(15.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
         ) {
-            OutlinedTextField(
-                value = title,
-                onValueChange = {
-                    addTaskViewModel.setTittle(it)
-                    isTitleError = false
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                isError = isTitleError,
-                supportingText = { if (isTitleError) Text(stringResource(R.string.digite_um_titulo_para_a_tarefa)) },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.titulo),
-                        fontFamily = myFontFamily,
-                        fontSize = 28.sp
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(70.dp, 120.dp),
-                colors = colorsTextFields,
-                textStyle = TextStyle(fontFamily = myFontFamily, fontSize = 28.sp),
-                shape = RoundedCornerShape(10.dp)
-                //shape = CutCornerShape(topStart = 16.dp, bottomEnd = 16.dp),
+            Text(
+                text = stringResource(R.string.adicionar),
+                fontFamily = myFontFamily,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface
             )
+        }
 
-            Spacer(modifier = Modifier.height(3.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedTextField(
-                value = details,
-                onValueChange = {
-                    addTaskViewModel.setDetails(it)
-                    isDetailsError = false
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                isError = isDetailsError,
-                supportingText = { if (isDetailsError) Text(stringResource(R.string.digite_os_detalhes_da_tarefa)) },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.detalhes),
-                        fontFamily = myFontFamily,
-                        fontSize = 20.sp
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.8f),
-                colors = colorsTextFields,
-                textStyle = TextStyle(fontFamily = myFontFamily, fontSize = 20.sp),
-                shape = RoundedCornerShape(10.dp)
-                //shape = CutCornerShape(topStart = 16.dp, bottomEnd = 16.dp),
-            )
-
-            Spacer(modifier = Modifier.height(3.dp))
-
-            Button(
-                onClick = {
-                    enableButton = false
-                    if (title.isNotEmpty() && details.isNotEmpty()) {
-                        val task = Task(title = title, details = details)
-
-                        coroutineScope.launch {
-                            addTaskViewModel.addTask(task)
-                        }
-
-                        navController.popBackStack("homeView", false)
-                    } else {
-                        if (title.isEmpty()) {
-                            isTitleError = true
-                        }
-                        if (details.isEmpty()) {
-                            isDetailsError = true
-                        }
-                        enableButton = true
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier.clickable(true) {
+                    if (navController.canGoBack) {
+                        navController.popBackStack()
                     }
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary,
-                    disabledContainerColor = Color.Gray
-                ),
-                shape = RoundedCornerShape(10.dp),
-                enabled = enableButton,
-                //shape = CutCornerShape(topStart = 14.dp, bottomEnd = 14.dp),
-                elevation = ButtonDefaults.buttonElevation(15.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.adicionar),
-                    fontFamily = myFontFamily,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    modifier = Modifier.clickable(true) {
-                        if (navController.canGoBack) {
-                            navController.popBackStack()
-                        }
-                    },
-                    text = stringResource(R.string.cancelar),
-                    fontFamily = myFontFamily,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-            }
+                text = stringResource(R.string.cancelar),
+                fontFamily = myFontFamily,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
         }
     }
 }

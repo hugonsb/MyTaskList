@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mytasklist.R
 import com.example.mytasklist.room.RepositoryResponse
+import com.example.mytasklist.theme.MyWhite
 import com.example.mytasklist.theme.myFontFamily
 import com.example.mytasklist.util.CustomCard
 import com.example.mytasklist.util.ThemeSwitcher
@@ -68,7 +69,6 @@ fun HomeView(
             )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-
             Row(
                 Modifier
                     .padding(horizontal = 10.dp, vertical = 5.dp),
@@ -145,8 +145,8 @@ fun HomeView(
             .padding(bottom = 10.dp, end = 10.dp)
             .size(70.dp)
             .align(Alignment.BottomEnd),
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            contentColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+            contentColor = MyWhite,
             shape = RoundedCornerShape(10.dp),
             //shape = CutCornerShape(topStart = 14.dp, bottomEnd = 14.dp),
             onClick = {

@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalView
 
 private val LightColors = lightColorScheme(
     primary = light_primary,
+    onPrimary = ButtoPurple,
     secondary = light_secondary,
     tertiary = MyPurple,
     onTertiary = MyPurple,
@@ -22,6 +23,7 @@ private val LightColors = lightColorScheme(
 
 private val DarkColors = darkColorScheme(
     primary = dark_primary,
+    onPrimary = ButtomGray,
     secondary = dark_secondary,
     tertiary = light_primary,
     onTertiary = MyWhite,

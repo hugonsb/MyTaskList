@@ -16,8 +16,7 @@ class TaskViewModel(
     private val tasksRepository: TasksRepository
 ) : ViewModel() {
 
-    private val _taskListState =
-        MutableStateFlow<RepositoryResponse<TaskListState>>(RepositoryResponse.Loading)
+    private val _taskListState = MutableStateFlow<RepositoryResponse<TaskListState>>(RepositoryResponse.Loading)
     val taskListState: StateFlow<RepositoryResponse<TaskListState>> = _taskListState.asStateFlow()
 
     init {
