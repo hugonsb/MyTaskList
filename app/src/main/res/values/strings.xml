@@ -1,18 +1,18 @@
 <resources>
-    <string name="app_name">MyTaskList</string>
-    <string name="adicionar_tarefa">Adicionar tarefa</string>
-    <string name="editar_tarefa">Editar tarefa</string>
-    <string name="excluir_tarefa">Excluir tarefa</string>
-    <string name="voltar">Voltar</string>
-    <string name="titulo">Título</string>
-    <string name="detalhes">Detalhes</string>
-    <string name="adicionar">Adicionar</string>
-    <string name="tarefas">Tarefas</string>
-    <string name="digite_um_titulo_para_a_tarefa">Digite um título para a tarefa</string>
-    <string name="digite_os_detalhes_da_tarefa">Digite os detalhes da tarefa</string>
-    <string name="cancelar">Cancelar</string>
-    <string name="toque_para_ver_mais">Toque para ver mais</string>
-    <string name="experimente_adicionar_uma_tarefa_clicando_no_bot_o">Experimente adicionar uma tarefa clicando no botão +</string>
-    <string name="tem_certeza_que_deseja_exluir">Tem certeza que deseja exluir?</string>
-    <string name="confirmar">Confirmar</string>
+    <string name="app_name">Notes</string>
+    <string name="nova_nota">New note</string>
+    <string name="editar_tarefa">Edit note</string>
+    <string name="excluir_tarefa">Delete note</string>
+    <string name="voltar">Go back</string>
+    <string name="titulo">Title</string>
+    <string name="detalhes">Details</string>
+    <string name="salvar">Save note</string>
+    <string name="digite_um_titulo_para_a_tarefa">Enter a title for the task</string>
+    <string name="digite_os_detalhes_da_tarefa">Enter task details</string>
+    <string name="cancelar">Cancel</string>
+    <string name="toque_para_ver_mais">Tap to see more</string>
+    <string name="experimente_adicionar_uma_nota_clicando_no">Try adding a note by tapping +</string>
+    <string name="tem_certeza_que_deseja_exluir">Are you sure you want to delete?</string>
+    <string name="confirmar">Confirm</string>
+    <string name="notas">Notes</string>
 </resources>
