@@ -1,5 +1,5 @@
-# MyTaskList
-Aplicativo de listas de tarefas.
+# Notes
+Aplicativo de bloco de notas.
 
 
 ## Tecnologias usadas e características
