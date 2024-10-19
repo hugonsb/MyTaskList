@@ -12,4 +12,4 @@ Aplicativo de bloco de notas.
 - SplashScreen
 
 ## Prévias
-<img src="https://raw.githubusercontent.com/hugonscm/MyTaskList/master/Pr%C3%A9vias.png" alt="prévias" min-width="800px" max-width="800px" width="800px" >
+<img src="https://raw.githubusercontent.com/hugonsb/Notes/refs/heads/master/pr%C3%A9vias.png" alt="prévias" min-width="800px" max-width="800px" width="800px" >
